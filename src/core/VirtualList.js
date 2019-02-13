@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { isEqual } from 'lodash';
+import { isEqual, sumBy } from 'lodash';
 import PropTypes from 'prop-types';
 
 class VirtualList extends Component {
@@ -7,17 +7,21 @@ class VirtualList extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            totalHeight: 0,
-            scrollHeight: 0,
+            totalHeight: { offset: 0, client: 0 },
+            totalWidth: 0,
+            scrollPosition: 0,
             startPoint: 0,
             endPoint: 0,
 
             fetchingRecord: false,
             loadVirtualData: false,
-            children: this.props.children
+            children: this.props.children,
+
+            isVertical: this.props.orientation !== 'horizontal'
         }
 
         this.containerHeight = 0;
+        this.containerWidth = 0;
         this.childrenData = [];
 
         this.paneDidMount = this.paneDidMount.bind(this);
@@ -57,22 +61,30 @@ class VirtualList extends Component {
     // handle event when actual pane did mount
     paneDidMount(node) {
         if (node) {
-            this.setState({ totalHeight: node.offsetHeight });
+            this.setState({
+                totalHeight: {
+                    offset: node.offsetHeight,
+                    client: node.clientHeight
+                }
+            });
         }
     };
 
     // handle event when virtual pane did mount
     virtualPaneDidMount(node) {
         if (node) {
-            const { scrollHeight } = this.state;
+            const { scrollPosition, isVertical } = this.state;
             this.containerHeight = node.offsetHeight;
-            this.setState(this.getRecordScale(scrollHeight));
+            this.containerWidth = node.offsetWidth;
+            this.setState(this.getRecordScale(scrollPosition));
 
-            if (scrollHeight !== 0) {
-                node.scrollTo(0, scrollHeight);
+            if (scrollPosition !== 0) {
+                const x = isVertical ? 0 : scrollPosition;
+                const y = isVertical ? scrollPosition : 0;
+                node.scrollTo(x, y);
             }
             node.addEventListener('scroll', (e) => {
-                const scroll = e.srcElement.scrollTop;
+                const scroll = e.srcElement[isVertical ? 'scrollTop' : 'scrollLeft'];
                 if (this.callServerAPI(scroll) && this.props.fetchMore) {
                     this.setState({ fetchingRecord: true }, () => {
                         this.props.fetchMore();
@@ -80,7 +92,7 @@ class VirtualList extends Component {
                 }
                 const scale = this.getRecordScale(scroll);
                 this.setState({
-                    scrollHeight: scroll,
+                    scrollPosition: scroll,
                     startPoint: scale.startPoint,
                     endPoint: scale.endPoint
                 });
@@ -100,32 +112,45 @@ class VirtualList extends Component {
                 recordLeft: node.offsetLeft
             });
             if (this.childrenData.length === this.state.children.length) {
-                this.setState({ loadVirtualData: true });
+                let obj = { loadVirtualData: true };
+                if (!this.state.isVertical) {
+                    const totalWidth = sumBy(this.childrenData, function (d) { return d.recordWidth; });
+                    obj.totalWidth = totalWidth;
+                }
+                this.setState(obj);
             }
         }
     }
 
     // return true if server API call is required by end of record list
     callServerAPI(scroll) {
-        const { totalHeight, fetchingRecord } = this.state;
-        if (this.childrenData.length === 0 || totalHeight === 0) return false;
-        return (scroll >= (totalHeight - this.containerHeight - 10)) && !fetchingRecord;
+        const { totalHeight, fetchingRecord, isVertical, totalWidth } = this.state;
+        if (isVertical) {
+            if (this.childrenData.length === 0 || totalHeight.offset === 0) return false;
+            return (scroll >= (totalHeight.offset - this.containerHeight - 10)) && !fetchingRecord;
+        }
+        else {
+            if (this.childrenData.length === 0 || totalWidth === 0) return false;
+            return (scroll >= (totalWidth - this.containerWidth - 10)) && !fetchingRecord;
+        }
     }
 
     // return start and end points to display records
     getRecordScale(scroll) {
+        const { isVertical } = this.state;
+
         let upperList = this.childrenData
-            .filter(x => (x.recordTop + x.recordHeight) <= scroll)
+            .filter(x => ((isVertical ? x.recordTop : x.recordLeft) + (isVertical ? x.recordHeight : x.recordWidth)) <= scroll)
             .slice(-(this.props.numberRenderedOffScreen));
-        let upperScroll = upperList && upperList.length > 0 ? upperList[0].recordTop : 0;
+        let upperScroll = upperList && upperList.length > 0 ? upperList[0][isVertical ? 'recordTop' : 'recordLeft'] : 0;
 
         let lowerList = this.childrenData
-            .filter(x => x.recordTop >= (scroll + this.containerHeight))
+            .filter(x => (isVertical ? x.recordTop : x.recordLeft) >= (scroll + (isVertical ? this.containerHeight : this.containerWidth)))
             .slice(0, this.props.numberRenderedOffScreen);
         let lowerScroll = lowerList && lowerList.length > 0 ?
-            lowerList[lowerList.length - 1].recordTop :
+            lowerList[lowerList.length - 1][isVertical ? 'recordTop' : 'recordLeft'] :
             (this.childrenData[this.childrenData.length - 1] ?
-                this.childrenData[this.childrenData.length - 1].recordTop : 0);
+                this.childrenData[this.childrenData.length - 1][isVertical ? 'recordTop' : 'recordLeft'] : 0);
 
         return {
             startPoint: upperScroll,
@@ -137,8 +162,10 @@ class VirtualList extends Component {
     renderChild() {
         return React.Children.map(this.state.children, (child) => {
             const id = Math.random();
+            var style = {...child.props.style, whiteSpace: 'normal' };
             return React.cloneElement(child, {
                 id: id,
+                style,
                 ref: ($event) => this.nodeDidMount($event, child, id)
             });
         });
@@ -146,18 +173,23 @@ class VirtualList extends Component {
 
     // render child node virtually
     renderVirtualChild() {
-        const { startPoint, endPoint } = this.state;
+        const { startPoint, endPoint, isVertical } = this.state;
         return this.childrenData.map((d, i) => {
-            if (d.recordTop >= startPoint && d.recordTop <= endPoint) {
+            if ((d[isVertical ? 'recordTop' : 'recordLeft']) >= startPoint && d[isVertical ? 'recordTop' : 'recordLeft'] <= endPoint) {
                 return React.cloneElement(d.node, {
                     key: i,
                     id: d.id,
                     style: {
+                        ...d.node.props.style,
                         position: 'absolute',
                         top: d.recordTop,
                         left: d.recordLeft,
                         height: d.recordHeight,
-                        width: d.recordWidth
+                        minHeight: d.recordHeight,
+                        width: d.recordWidth,
+                        minWidth: d.recordWidth,
+                        margin: 0,
+                        whiteSpace: 'normal'
                     }
                 });
             }
@@ -166,24 +198,24 @@ class VirtualList extends Component {
     }
 
     render() {
-        const { children, fetchingRecord, totalHeight, loadVirtualData } = this.state;
+        const { children, fetchingRecord, totalHeight, totalWidth, loadVirtualData, isVertical } = this.state;
 
         return (
             <div className={`virtual-list ${this.props.className}`}>
                 {children && children.length > 0 ? <React.Fragment>
                     {!loadVirtualData ?
-                        <div className="list-outer">
-                            <div style={{ overflow: 'hidden' }} ref={this.paneDidMount}>
+                        <div className="list-outer" style={{ position: isVertical ? 'absolute' : 'relative' }}>
+                            <div className={isVertical ? 'list-vertical' : 'list-horizontal'} style={{ overflow: 'hidden !important' }} ref={this.paneDidMount}>
                                 {this.renderChild()}
                             </div>
                         </div> :
-                        <div className="list-outer" ref={this.virtualPaneDidMount}>
-                            <div style={{ height: totalHeight, overflow: 'hidden' }}>
+                        <div className="list-outer" ref={this.virtualPaneDidMount} style={{ height: isVertical ? 'auto' : totalHeight.offset, overflowY: isVertical ? 'auto' : 'hidden' }}>
+                            <div className={isVertical ? 'list-vertical' : 'list-horizontal'} style={{ height: totalHeight.client, width: isVertical ? 'auto' : totalWidth }}>
                                 {this.renderVirtualChild()}
                             </div>
                         </div>}
                 </React.Fragment> : null}
-                {fetchingRecord ? <div className="loading-box">Loading...</div>
+                {fetchingRecord ? <div className="loading-box" style={{ height: isVertical ? '100%' : totalHeight.client }}>Loading...</div>
                     : null}
             </div>
         );

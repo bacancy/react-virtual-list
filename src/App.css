@@ -2,6 +2,7 @@ body{
   padding:10px;
 }
 
+/* virtual list style */
 .virtual-list{
   width: 100%; 
   height: 100%; 
@@ -15,6 +16,17 @@ body{
   overflow-y: auto;
   position: absolute;
 }
+.list-vertical{
+  overflow: hidden;
+}
+.list-horizontal {
+  white-space: nowrap;
+  overflow: auto !important;
+  overflow-x: scroll;
+}
+.list-horizontal > * {
+  display: inline-block;
+}
 .loading-box{
   width: 100%;
   height: 100%;
@@ -24,31 +36,68 @@ body{
   justify-content: center;
   align-items: center;
 }
-.no-record{
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  background: #ffffff;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+/* virtual list style end */
 
 
 
-.box{
-  padding: 10px;
-  box-sizing: border-box;
-  border: 1px solid rgb(238, 238, 238);
-  background: rgba(229, 229, 229, 0.2);
-  height: 200px;
-  float: left;
-  width: 200px;
-  min-width: 100px;  
-}
 
 .actions .item{
   color:#666;
   float: left;
   margin: 0 40px 20px 0;
+}
+
+.list-vertical, .list-horizontal {
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+}
+
+.list-vertical {
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+}
+
+
+.hbox{
+  min-width: 200px;
+  width: 200px;
+}
+.box{
+  width: 200px;
+  min-width: 200px;
+}
+.profile{
+  background-color: #f1f9ff;
+  margin: 10px;
+  border: 1px solid #ddd;
+}
+.profile img{
+  width: 100%;
+  height: 200px;
+}
+.profile .info{
+  padding:10px;
+}
+.profile .info span{
+  font-size: 11px;
+}
+.profile .info a{
+  display: block;
+  margin-top: 10px;
+  text-align: right;
+  font-size: 13px;
+  text-decoration: none;
+  color: #0372c5;
+  font-weight: 600;
+}
+.full-width{
+  width: calc(100% - 20px);
+}
+.full-width img{
+  float: left;
+  width: 200px;
+  height: 100%;
+  margin-right: 20px;
 }
