@@ -17,7 +17,8 @@ class VirtualList extends Component {
             loadVirtualData: false,
             children: this.props.children,
 
-            isVertical: this.props.orientation !== 'horizontal'
+            isVertical: this.props.orientation !== 'horizontal',
+            displayLoading: false
         }
 
         this.containerHeight = 0;
@@ -53,7 +54,8 @@ class VirtualList extends Component {
             this.setState({
                 children: nextProps.children,
                 loadVirtualData: false,
-                fetchingRecord: false
+                fetchingRecord: false,
+                displayLoading: false
             });
         }
     }
@@ -89,6 +91,9 @@ class VirtualList extends Component {
                     this.setState({ fetchingRecord: true }, () => {
                         this.props.fetchMore();
                     });
+                }
+                if (this.displayAPILoading(scroll) && this.props.fetchMore) {
+                    this.setState({ displayLoading: true });
                 }
                 const scale = this.getRecordScale(scroll);
                 this.setState({
@@ -135,6 +140,19 @@ class VirtualList extends Component {
             if (this.childrenData.length === 0 || totalWidth === 0) return false;
             // return (scroll >= (totalWidth - this.containerWidth - 10)) && !fetchingRecord;
             return (scroll >= this.childrenData[this.childrenData.length - this.props.numberRenderedOffScreen].recordLeft - this.containerWidth) && !fetchingRecord;
+        }
+    }
+
+    // return true if server API call is required by end of record list
+    displayAPILoading(scroll) {
+        const { totalHeight, displayLoading, isVertical, totalWidth } = this.state;
+        if (isVertical) {
+            if (this.childrenData.length === 0 || totalHeight.offset === 0) return false;
+            return (scroll >= (totalHeight.offset - this.containerHeight - 10)) && !displayLoading;
+        }
+        else {
+            if (this.childrenData.length === 0 || totalWidth === 0) return false;
+            return (scroll >= (totalWidth - this.containerWidth - 10)) && !displayLoading;
         }
     }
 
@@ -201,7 +219,7 @@ class VirtualList extends Component {
     }
 
     render() {
-        const { children, fetchingRecord, totalHeight, totalWidth, loadVirtualData, isVertical } = this.state;
+        const { children, displayLoading, totalHeight, totalWidth, loadVirtualData, isVertical } = this.state;
 
         return (
             <div className={`virtual-list ${this.props.className}`}>
@@ -218,7 +236,7 @@ class VirtualList extends Component {
                             </div>
                         </div>}
                 </React.Fragment> : null}
-                {fetchingRecord ? <div className="loading-box" style={{ height: isVertical ? '100%' : totalHeight.client }}>Loading...</div>
+                {displayLoading ? <div className="loading-box" style={{ height: isVertical ? '100%' : totalHeight.client }}>Loading...</div>
                     : null}
             </div>
         );
