@@ -214,7 +214,7 @@ class App extends Component {
       }
       setTimeout(() => {
         resolve(data);
-      }, 1000);
+      }, 500);
     })
   }
 
