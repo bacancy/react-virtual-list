@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import VirtualList from './core/VirtualList';
 import './App.css';
+import { names, desc } from "./utils/Constant";
 
 class App extends Component {
   constructor(props) {
@@ -23,181 +24,6 @@ class App extends Component {
 
     this.recordPerAPI = 50;
     this.fetchMore = this.fetchMore.bind(this);
-
-    this.names = [
-      "Gaynelle Delreal",
-      "Donnie Gisi",
-      "Jefferson Jennette",
-      "Daniele Cogburn",
-      "Sherril Hinz",
-      "Lucienne Claassen",
-      "Laurinda Giampaolo",
-      "Toshia Lillibridge",
-      "Kymberly Selfridge",
-      "Aracely Fonda",
-      "Lisbeth Bredeson",
-      "Leonie Canino",
-      "Willie Baginski",
-      "Lacie Knop",
-      "Debora Orsborn",
-      "Ivana Jackson",
-      "Lilly Didier",
-      "Shea Dickerson",
-      "Gerry Yant",
-      "Kathe Pratts",
-      "Minerva Plumb",
-      "Arica Breslin",
-      "Lucinda Dresel",
-      "Robbyn Grumbles",
-      "Signe Lovette",
-      "Tyler Parks",
-      "Long Keene",
-      "Amber Wright",
-      "Chieko Ruse",
-      "Cody Villalobos",
-      "Lynette Aguirre",
-      "Rosana Hayworth",
-      "Carlee Starnes",
-      "Sharon Grossi",
-      "Mitzie Erhart",
-      "Natalia Nack",
-      "Ina Westerman",
-      "Adina Sallee",
-      "Gerri Shadwick",
-      "Eleonora Papas",
-      "Princess Greenidge",
-      "Otha Proulx",
-      "Ruben Lytch",
-      "Vania Vester",
-      "Jillian Wherry",
-      "Xiao Litherland",
-      "Clement Harrington",
-      "Roxana Gledhill",
-      "Hayden Lineberry",
-      "Gaylord Musick",
-      "Gaynelle Delreal",
-      "Donnie Gisi",
-      "Jefferson Jennette",
-      "Daniele Cogburn",
-      "Sherril Hinz",
-      "Lucienne Claassen",
-      "Laurinda Giampaolo",
-      "Toshia Lillibridge",
-      "Kymberly Selfridge",
-      "Aracely Fonda",
-      "Lisbeth Bredeson",
-      "Leonie Canino",
-      "Willie Baginski",
-      "Lacie Knop",
-      "Debora Orsborn",
-      "Ivana Jackson",
-      "Lilly Didier",
-      "Shea Dickerson",
-      "Gerry Yant",
-      "Kathe Pratts",
-      "Minerva Plumb",
-      "Arica Breslin",
-      "Lucinda Dresel",
-      "Robbyn Grumbles",
-      "Signe Lovette",
-      "Tyler Parks",
-      "Long Keene",
-      "Amber Wright",
-      "Chieko Ruse",
-      "Cody Villalobos",
-      "Lynette Aguirre",
-      "Rosana Hayworth",
-      "Carlee Starnes",
-      "Sharon Grossi",
-      "Mitzie Erhart",
-      "Natalia Nack",
-      "Ina Westerman",
-      "Adina Sallee",
-      "Gerri Shadwick",
-      "Eleonora Papas",
-      "Princess Greenidge",
-      "Otha Proulx",
-      "Ruben Lytch",
-      "Vania Vester",
-      "Jillian Wherry",
-      "Xiao Litherland",
-      "Clement Harrington",
-      "Roxana Gledhill",
-      "Hayden Lineberry",
-      "Gaylord Musick",
-    ];
-
-    this.desc = [
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "Nunc dapibus nunc eget neque vehicula, ut blandit nisl commodo.",
-      "Nam et diam tincidunt, finibus lorem ac, interdum diam.",
-      "Mauris quis est eu ipsum pellentesque tempor.",
-      "Fusce faucibus est quis ante vehicula, quis maximus odio egestas.",
-      "Nunc in dui vel leo varius euismod eget vestibulum leo.",
-      "Integer placerat magna in metus pulvinar tempor.",
-      "Ut auctor neque vel tincidunt fermentum.",
-      "Nulla aliquam magna eu consectetur viverra.",
-      "Pellentesque a nunc ut sapien posuere tempor vitae et nulla.",
-      "Nulla porttitor dui scelerisque tortor cursus congue.",
-      "Nullam hendrerit leo a facilisis cursus.",
-      "Proin varius urna quis egestas iaculis.",
-      "Etiam volutpat sapien quis lacus faucibus, quis faucibus purus sollicitudin.",
-      "Vivamus et libero aliquet nibh convallis elementum vel nec ante.",
-      "Suspendisse vitae enim accumsan turpis auctor porttitor.",
-      "Sed eu urna et ligula semper elementum.",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "Nunc dapibus nunc eget neque vehicula, ut blandit nisl commodo.",
-      "Nam et diam tincidunt, finibus lorem ac, interdum diam.",
-      "Mauris quis est eu ipsum pellentesque tempor.",
-      "Fusce faucibus est quis ante vehicula, quis maximus odio egestas.",
-      "Nunc in dui vel leo varius euismod eget vestibulum leo.",
-      "Integer placerat magna in metus pulvinar tempor.",
-      "Ut auctor neque vel tincidunt fermentum.",
-      "Nulla aliquam magna eu consectetur viverra.",
-      "Pellentesque a nunc ut sapien posuere tempor vitae et nulla.",
-      "Nulla porttitor dui scelerisque tortor cursus congue.",
-      "Nullam hendrerit leo a facilisis cursus.",
-      "Proin varius urna quis egestas iaculis.",
-      "Etiam volutpat sapien quis lacus faucibus, quis faucibus purus sollicitudin.",
-      "Vivamus et libero aliquet nibh convallis elementum vel nec ante.",
-      "Suspendisse vitae enim accumsan turpis auctor porttitor.",
-      "Sed eu urna et ligula semper elementum.",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "Nunc dapibus nunc eget neque vehicula, ut blandit nisl commodo.",
-      "Nam et diam tincidunt, finibus lorem ac, interdum diam.",
-      "Mauris quis est eu ipsum pellentesque tempor.",
-      "Fusce faucibus est quis ante vehicula, quis maximus odio egestas.",
-      "Nunc in dui vel leo varius euismod eget vestibulum leo.",
-      "Integer placerat magna in metus pulvinar tempor.",
-      "Ut auctor neque vel tincidunt fermentum.",
-      "Nulla aliquam magna eu consectetur viverra.",
-      "Pellentesque a nunc ut sapien posuere tempor vitae et nulla.",
-      "Nulla porttitor dui scelerisque tortor cursus congue.",
-      "Nullam hendrerit leo a facilisis cursus.",
-      "Proin varius urna quis egestas iaculis.",
-      "Etiam volutpat sapien quis lacus faucibus, quis faucibus purus sollicitudin.",
-      "Vivamus et libero aliquet nibh convallis elementum vel nec ante.",
-      "Suspendisse vitae enim accumsan turpis auctor porttitor.",
-      "Sed eu urna et ligula semper elementum.",
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-      "Nunc dapibus nunc eget neque vehicula, ut blandit nisl commodo.",
-      "Nam et diam tincidunt, finibus lorem ac, interdum diam.",
-      "Mauris quis est eu ipsum pellentesque tempor.",
-      "Fusce faucibus est quis ante vehicula, quis maximus odio egestas.",
-      "Nunc in dui vel leo varius euismod eget vestibulum leo.",
-      "Integer placerat magna in metus pulvinar tempor.",
-      "Ut auctor neque vel tincidunt fermentum.",
-      "Nulla aliquam magna eu consectetur viverra.",
-      "Pellentesque a nunc ut sapien posuere tempor vitae et nulla.",
-      "Nulla porttitor dui scelerisque tortor cursus congue.",
-      "Nullam hendrerit leo a facilisis cursus.",
-      "Proin varius urna quis egestas iaculis.",
-      "Etiam volutpat sapien quis lacus faucibus, quis faucibus purus sollicitudin.",
-      "Vivamus et libero aliquet nibh convallis elementum vel nec ante.",
-      "Suspendisse vitae enim accumsan turpis auctor porttitor.",
-      "Sed eu urna et ligula semper elementum."
-    ]
-
   }
 
   componentDidMount() {
@@ -207,6 +33,7 @@ class App extends Component {
 
   //#region GET RECORDS
 
+  // Promise based function for API use
   getDataByPage(page) {
     return new Promise((resolve, reject) => {
       const data = [];
@@ -220,6 +47,7 @@ class App extends Component {
     })
   }
 
+  // get record list by API call
   getData(page) {
     this.getDataByPage(page)
       .then(records => {
@@ -232,6 +60,7 @@ class App extends Component {
       .catch(err => console.log('Error occured while fetching data:' + err));
   }
 
+  // handle fetch more record functionality
   fetchMore() {
     let { counter } = this.state;
     counter++;
@@ -254,18 +83,79 @@ class App extends Component {
         <h3>Virtual List</h3>
         <div className="actions">
           <div className="item">
-            Orientation: <select value={orientation} onChange={(e) => this.setState({ orientation: e.target.value, fullWidthContent: false, appKey: Math.random() })} >
+            Orientation:
+            <select value={orientation} onChange={(e) => this.setState({
+              orientation: e.target.value,
+              fullWidthContent: false,
+              appKey: Math.random()
+            })}>
               <option value="vertical">Vertical</option>
               <option value="horizontal">Horizontal</option>
             </select>
           </div>
-          <div className="item"><input type="checkbox" checked={fetchMoreRecord} onChange={(e) => this.setState({ fetchMoreRecord: e.target.checked })} />Fetch more record</div>
-          <div className="item"><input type="checkbox" checked={dynamicWidth} onChange={(e) => this.setState({ dynamicWidth: e.target.checked, fullWidthContent: false })} />Dynamic width of content</div>
-          {(orientation === 'horizontal') && <div className="item"><input type="checkbox" checked={dynamicHeight} onChange={(e) => this.setState({ dynamicHeight: e.target.checked, fullWidthContent: false })} />Dynamic height of content</div>}
-          {(orientation === 'horizontal') && <div className="item"><input type="checkbox" checked={dynamicHeightWithlign} onChange={(e) => this.setState({ dynamicHeightWithlign: e.target.checked, fullWidthContent: false })} />Dynamic height of content (Center Align)</div>}
-          {orientation === 'vertical' ? <div className="item"><input type="checkbox" checked={fullWidthContent} onChange={(e) => this.setState({ fullWidthContent: e.target.checked, dynamicWidth: false })} />Full width of content</div> : null}
-          <div className="item">Class name: <input type="text" placeholder="Enter class name" value={classNameList} onChange={(e) => this.setState({ classNameList: e.target.value })} /></div>
-          <div className="item">Number rendered off screen: <input type="number" placeholder="Enter number" value={numberRenderedOffScreen} onChange={(e) => this.setState({ numberRenderedOffScreen: e.target.value, appKey: Math.random() })} /></div>
+          <div className="item">
+            <input
+              type="checkbox"
+              checked={fetchMoreRecord}
+              onChange={(e) => this.setState({ fetchMoreRecord: e.target.checked })}
+            /> Fetch more record</div>
+          <div className="item">
+            <input
+              type="checkbox"
+              checked={dynamicWidth}
+              onChange={(e) => this.setState({ dynamicWidth: e.target.checked, fullWidthContent: false })}
+            />Dynamic width of content</div>
+          {orientation === 'horizontal' ?
+            <div className="item">
+              <input
+                type="checkbox"
+                checked={dynamicHeight}
+                onChange={(e) => this.setState({ dynamicHeight: e.target.checked, fullWidthContent: false })}
+              />Dynamic height of content</div>
+            : null}
+          {orientation === 'horizontal' ?
+            <div className="item">
+              <input
+                type="checkbox"
+                checked={dynamicHeightWithlign}
+                onChange={(e) => this.setState({
+                  dynamicHeightWithlign: e.target.checked,
+                  fullWidthContent: false
+                })}
+              />Dynamic height of content(Align Center)</div>
+            : null}
+          {orientation === 'vertical' ?
+            <div className="item">
+              <input
+                type="checkbox"
+                checked={fullWidthContent}
+                onChange={(e) => this.setState({
+                  fullWidthContent: e.target.checked,
+                  dynamicWidth: false
+                })}
+              />Full width of content</div>
+            : null}
+          <div className="item">
+            Class name:
+            <input
+              type="text"
+              placeholder="Enter class name"
+              value={classNameList}
+              onChange={(e) => this.setState({ classNameList: e.target.value })}
+            />
+          </div>
+          <div className="item">
+            Number rendered off screen:
+            <input
+              type="number"
+              placeholder="Enter number"
+              value={numberRenderedOffScreen}
+              onChange={(e) => this.setState({
+                numberRenderedOffScreen: e.target.value,
+                appKey: Math.random()
+              })}
+            />
+          </div>
           <div style={{ clear: 'both' }}></div>
         </div>
 
@@ -278,18 +168,21 @@ class App extends Component {
           >
             {this.state.recordList
               .map((d, i) => {
-                return <div key={i} className={orientation === 'vertical' ? `box profile${fullWidthContent ? ' full-width' : ''}` : 'hbox profile'} style={{
-                  width: dynamicWidth ? (200 + i) : null,
-                  height: (dynamicHeight || dynamicHeightWithlign) ? (364 + i) : null,
-                  minWidth: dynamicWidth ? (200 + i) : null,
-                  justifyContent: dynamicHeightWithlign ? 'center' : '',
-                  alignSelf: dynamicHeightWithlign ? 'center' : '',
-                }}>
+                return <div key={i}
+                  className={orientation === 'vertical' ? `box profile${fullWidthContent ? ' full-width' : ''}` : 'hbox profile'}
+                  style={{
+                    width: dynamicWidth ? (200 + i) : null,
+                    height: (dynamicHeight || dynamicHeightWithlign) ? (364 + i) : null,
+                    minWidth: dynamicWidth ? (200 + i) : null,
+                    justifyContent: dynamicHeightWithlign ? 'center' : '',
+                    alignSelf: dynamicHeightWithlign ? 'center' : '',
+                  }}>
                   <div>
-                    <img src={`https://randomuser.me/api/portraits/men/${i % 70}.jpg`} alt="demo profile" />
+                    <img src={`https://randomuser.me/api/portraits/men/${i % 70}.jpg`}
+                      alt="demo profile" />
                     <div className="info">
-                      <h4>{this.names[i % 55]}</h4>
-                      <span>{this.desc[i % 55]}</span>
+                      <h4>{names[i % 55]}</h4>
+                      <span>{desc[i % 55]}</span>
                       <a href="javascript:;">View More...</a>
                     </div>
                   </div>
@@ -297,25 +190,6 @@ class App extends Component {
               })}
           </VirtualList>
         </div>
-
-        {/* <div style={{ height: 400 }}>
-          <VirtualList fetchMore={this.fetchMore} className="testclass">
-            {this.state.recordList
-              .map((d, i) => {
-                return <div key={i} className="box">{d.name}</div>
-              })}
-          </VirtualList>
-        </div> */}
-
-        {/* <div>
-          <VirtualList fetchMore={this.fetchMore} className="testclass" orientation='horizontal'>
-            {this.state.recordList
-              .map((d, i) => {
-                return <div key={i} className="hbox">{d.name}</div>
-              })}
-          </VirtualList>
-        </div> */}
-
       </div>
     );
   }

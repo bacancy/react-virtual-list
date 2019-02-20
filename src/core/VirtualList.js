@@ -133,12 +133,10 @@ class VirtualList extends Component {
         const { totalHeight, fetchingRecord, isVertical, totalWidth } = this.state;
         if (isVertical) {
             if (this.childrenData.length === 0 || totalHeight.offset === 0) return false;
-            // return (scroll >= (totalHeight.offset - this.containerHeight - 10)) && !fetchingRecord;
             return (scroll >= this.childrenData[this.childrenData.length - this.props.numberRenderedOffScreen].recordTop - this.containerHeight) && !fetchingRecord;
         }
         else {
             if (this.childrenData.length === 0 || totalWidth === 0) return false;
-            // return (scroll >= (totalWidth - this.containerWidth - 10)) && !fetchingRecord;
             return (scroll >= this.childrenData[this.childrenData.length - this.props.numberRenderedOffScreen].recordLeft - this.containerWidth) && !fetchingRecord;
         }
     }
